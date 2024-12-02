@@ -108,6 +108,9 @@ class HintInputWidget extends StatelessWidget {
                 color: kcRedColor,
                 width: 0.5,
               )),
+          disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6),
+              borderSide: const BorderSide(color: Color(0xFFDDDDDD), width: 0)),
           errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(6),
               borderSide: const BorderSide(

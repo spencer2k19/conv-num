@@ -45,6 +45,7 @@ class HomeView extends StackedView<HomeViewModel> {
                       controller: viewModel.searchController,
                       onChange: viewModel.onSearchChanged,
                       keyboardType: TextInputType.text,
+                      isEnabled: viewModel.contacts.isNotEmpty,
                       suffixIcon: viewModel.searchController.text.isEmpty
                           ? null
                           : InkWell(
@@ -66,19 +67,26 @@ class HomeView extends StackedView<HomeViewModel> {
                               color: Colors.black,
                             ),
                           )
-                        : ListView.builder(
-                            padding: const EdgeInsets.only(
-                                left: 20, right: 20, bottom: 60, top: 20),
-                            itemBuilder: (context, index) {
-                              final contact =
-                                  viewModel.filteringContacts[index];
-                              return ContactItem(
-                                contact: contact,
-                                isNotSafe: viewModel.isContactNoSafe(contact),
-                              );
-                            },
-                            itemCount: viewModel.filteringContacts.length,
-                          ))
+                        : viewModel.contacts.isEmpty
+                            ? Center(
+                                child: Text(
+                                "Aucun contacts",
+                                style: kcTitleBoldStyle,
+                              ))
+                            : ListView.builder(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20, bottom: 60, top: 20),
+                                itemBuilder: (context, index) {
+                                  final contact =
+                                      viewModel.filteringContacts[index];
+                                  return ContactItem(
+                                    contact: contact,
+                                    isNotSafe:
+                                        viewModel.isContactNoSafe(contact),
+                                  );
+                                },
+                                itemCount: viewModel.filteringContacts.length,
+                              ))
               ],
             ),
             Align(
@@ -93,12 +101,15 @@ class HomeView extends StackedView<HomeViewModel> {
                     minWidth: 100.w,
                     height: 45,
                     onPressed: (viewModel.isBusy ||
-                            viewModel.busy(viewModel.keyProcessing))
+                            viewModel.busy(viewModel.keyProcessing) ||
+                            viewModel.contacts.isEmpty)
                         ? null
                         : () {
                             viewModel.processContacts();
                           },
-                    color: kcAccentColor,
+                    color: viewModel.contacts.isEmpty
+                        ? Colors.grey
+                        : kcAccentColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                     child: viewModel.busy(viewModel.keyProcessing)
